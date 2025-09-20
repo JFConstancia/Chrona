@@ -13,14 +13,9 @@ import { Button } from '@/components/Button'
 import { Container } from '@/components/Container'
 import { Logo } from '@/components/Logo'
 import { NavLink } from '@/components/NavLink'
+import { useSession } from 'next-auth/react'
 
-function MobileNavLink({
-  href,
-  children,
-}: {
-  href: string
-  children: React.ReactNode
-}) {
+function MobileNavLink({ href, children }: { href: string, children: React.ReactNode}) {
   return (
     <PopoverButton as={Link} href={href} className="block w-full p-2">
       {children}
@@ -39,17 +34,11 @@ function MobileNavIcon({ open }: { open: boolean }) {
     >
       <path
         d="M0 1H14M0 7H14M0 13H14"
-        className={clsx(
-          'origin-center transition',
-          open && 'scale-90 opacity-0',
-        )}
+        className={clsx('origin-center transition', open && 'scale-90 opacity-0')}
       />
       <path
         d="M2 2L12 12M12 2L2 12"
-        className={clsx(
-          'origin-center transition',
-          !open && 'scale-90 opacity-0',
-        )}
+        className={clsx('origin-center transition', !open && 'scale-90 opacity-0')}
       />
     </svg>
   )
@@ -76,13 +65,15 @@ function MobileNavigation() {
         <MobileNavLink href="#testimonials">Testimonials</MobileNavLink>
         <MobileNavLink href="#pricing">Pricing</MobileNavLink>
         <hr className="m-2 border-slate-300/40" />
-        <MobileNavLink href="/login">Sign in</MobileNavLink>
+        <MobileNavLink href="/api/auth/signin">Sign in</MobileNavLink>
       </PopoverPanel>
     </Popover>
   )
 }
 
 export function Header() {
+  const { status, data: session } = useSession() 
+
   return (
     <header className="py-10">
       <Container>
@@ -99,7 +90,12 @@ export function Header() {
           </div>
           <div className="flex items-center gap-x-5 md:gap-x-8">
             <div className="hidden md:block">
-              <NavLink href="/login">Sign in</NavLink>
+              { status === 'authenticated' && <>
+                <NavLink href="dashboard">Dashboard</NavLink>
+                <NavLink href="/api/auth/signout">Sign out</NavLink>
+              </>}
+              { status === 'loading' && <span>loading...</span> }
+              { status === 'unauthenticated' && (<NavLink href="/api/auth/signin">Sign in</NavLink>)}
             </div>
             <Button href="/register" color="blue">
               <span>

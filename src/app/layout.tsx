@@ -1,8 +1,10 @@
 import { type Metadata } from 'next'
 import { Inter, Lexend } from 'next/font/google'
 import clsx from 'clsx'
+import { SessionProvider } from 'next-auth/react'
 
 import '@/styles/tailwind.css'
+import AuthProvider from './auth/Provider'
 
 export const metadata: Metadata = {
   title: {
@@ -39,7 +41,9 @@ export default function RootLayout({
         lexend.variable,
       )}
     >
-      <body className="flex h-full flex-col">{children}</body>
+      <body className="flex h-full flex-col">
+        <AuthProvider>{children}</AuthProvider>
+      </body>
     </html>
   )
 }
