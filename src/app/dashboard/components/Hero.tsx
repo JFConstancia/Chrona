@@ -1,5 +1,6 @@
 import React from 'react'
 import { ChevronRightIcon } from '@heroicons/react/24/outline'
+import Image from 'next/image'
 
 const Hero = () => {
   return (
@@ -42,7 +43,7 @@ const Hero = () => {
       </div>
       <div className="mx-auto max-w-7xl px-6 pt-10 pb-24 sm:pb-32 lg:flex lg:px-8 lg:py-40">
         <div className="mx-auto max-w-2xl shrink-0 lg:mx-0 lg:pt-8">
-          <img
+          <Image
             alt="Your Company"
             src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=600"
             className="h-11"
@@ -50,7 +51,7 @@ const Hero = () => {
           <div className="mt-24 sm:mt-32 lg:mt-16">
             <a href="#" className="inline-flex space-x-6">
               <span className="rounded-full bg-indigo-50 px-3 py-1 text-sm/6 font-semibold text-indigo-600 ring-1 ring-indigo-600/20 ring-inset">
-                What's new
+                What&apos;s new
               </span>
               <span className="inline-flex items-center space-x-2 text-sm/6 font-medium text-gray-600">
                 <span>Just shipped v1.0</span>
@@ -79,7 +80,7 @@ const Hero = () => {
         </div>
         <div className="mx-auto mt-16 flex max-w-2xl sm:mt-24 lg:mt-0 lg:mr-0 lg:ml-10 lg:max-w-none lg:flex-none xl:ml-32">
           <div className="max-w-3xl flex-none sm:max-w-5xl lg:max-w-none">
-            <img
+            <Image
               alt="App screenshot"
               src="https://tailwindcss.com/plus-assets/img/component-images/project-app-screenshot.png"
               width={2432}
