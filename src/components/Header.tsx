@@ -95,7 +95,11 @@ export function Header() {
                 <NavLink href="/api/auth/signout">Sign out</NavLink>
               </>}
               { status === 'loading' && <span>loading...</span> }
-              { status === 'unauthenticated' && (<NavLink href="/api/auth/signin">Sign in</NavLink>)}
+              { status === 'unauthenticated' && <>
+                <NavLink href="/api/auth/signin">Sign in</NavLink>
+                <NavLink href="/register">Register</NavLink>
+              </>
+              }
             </div>
             <Button href="/register" color="blue">
               <span>

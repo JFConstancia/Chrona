@@ -23,8 +23,8 @@ model User {
   image         String?
   accounts      Account[]
   sessions      Session[]
-  // Optional for WebAuthn support
   Authenticator Authenticator[]
+  phoneNumber   String? @unique
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -88,4 +88,54 @@ model Authenticator {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@id([userId, credentialID])
+}
+
+/// ✅ Trial status per telefoon (geen user-account nodig)
+model PhoneTrial {
+  phoneNumber       String   @id                  // bv. "+31612345678" (zonder "whatsapp:")
+  status      String                        // 'trialing' | 'active' | 'expired'
+  trialEndsAt DateTime?
+  createdAt   DateTime @default(now())
+
+  @@index([status])
+}
+
+
+/// ✅ Tijdelijke Google-tokens gekoppeld aan telefoon tijdens trial
+model GooglePhoneToken {
+  phoneNumber        String   @id
+  accessToken  String   @db.Text
+  refreshToken String?  @db.Text
+  expiresAt    BigInt?
+  email        String?
+  updatedAt    DateTime @default(now())
+}
+
+/// ✅ Abonnementsstatus na upgrade (klassiek billing-record bij een user)
+model Billing {
+  userId               String  @id
+  stripeCustomerId     String?
+  stripeSubscriptionId String?
+  status               String   // 'active' | 'canceled' | 'past_due' | ...
+  currentPeriodEnd     DateTime?
+
+  @@index([status])
+}
+
+/// (Optioneel) persistente Google-tokens ná upgrade, gekoppeld aan user
+model GoogleAccount {
+  userId       String  @id
+  accessToken  String  @db.Text
+  refreshToken String? @db.Text
+  expiresAt    BigInt?
+  email        String?
+}
+
+/// (Optioneel) voorkom dubbele reminders
+model ReminderSent {
+  phoneNumber   String
+  googleEventId String
+  sentAt        DateTime @default(now())
+
+  @@id([phoneNumber, googleEventId])
 }

@@ -6,5 +6,5 @@ export const registerSchema = z.object({
     .email(),
   password: z
     .string()
-    .min(8),
+    .min(5),
 })

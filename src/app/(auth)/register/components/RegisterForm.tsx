@@ -1,14 +1,18 @@
 'use client'
 
+import { emailService } from '@/app/api/common/services/email.service'
 import { userService } from '@/app/common/services/user.service'
 import { Button } from '@/components/Button'
 import { TextField } from '@/components/Fields'
 import { useRouter } from 'next/navigation'
 import React, { useState } from 'react'
+import WelcomeTemplate from '../../../../../emails/WelcomeTemplate'
+import VerifyEmailTemplate from '../../../../../emails/VerifyEmailTemplate'
 
 const RegisterForm = () => {
   const router = useRouter()
   const [error, setError] = useState<string | null>(null)
+  const [success, setSuccess] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -21,9 +25,9 @@ const RegisterForm = () => {
     const password = String(formData.get('password'))
 
     try {
-      const registerUserResult = await userService.registerUser(email, password)
+      const registerUserResult = await userService.registerUserAsync(email, password)
 
-      if (registerUserResult.ok) router.push('/dashboard' )
+      if (registerUserResult.ok) setSuccess('Registration successful! Please check your email for a verification link.')
       else setError('Invalid email or password')
     } 
     catch (error) { setError('Something went wrong') } 
@@ -59,7 +63,7 @@ const RegisterForm = () => {
 
       <TextField
         className="col-span-full"
-        label="Password (8 characters minimum)"
+        label="Password (5 characters minimum)"
         name="password"
         type="password"
         autoComplete="new-password"
@@ -74,6 +78,12 @@ const RegisterForm = () => {
         </Button>
       </div>
       
+      {success && (
+        <div className="col-span-full text-green-600 text-sm mt-2">
+          {success}
+        </div>
+      )}
+
       {error && (
         <div className="col-span-full text-red-600 text-sm mt-2">
           {error}
