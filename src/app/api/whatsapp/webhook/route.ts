@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from "next/server"
 import { twilioService } from "../../common/services/twilio.service"
 import { trialService } from "../../common/services/trial.service"
 import { accessGuardService } from "../../common/services/access-guard.service"
+import { conversationService } from "../../common/services/conversation.service"
 
 export async function POST(request: NextRequest) {
   try {
@@ -38,10 +39,11 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ ok: true })
     }
 
-    // TODO: vervang onderstaande echo met jouw create/list/cancel flow
-    const message = `✅ Connected. You said: "${body}". (Planning logic coming here)`
-    await twilioService.sendMessageAsync(from, message);
+    const openAiResponse = await conversationService.sendMessage(body, phoneNumber)
+    await twilioService.sendMessageAsync(from, openAiResponse.message)
     
+    // TODO: vervang onderstaande echo met jouw create/list/cancel flow
+
     return NextResponse.json({ ok: true })
   }
   catch (error: any) {
