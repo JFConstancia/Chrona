@@ -18,10 +18,22 @@ const getGooglePhoneTokenAsync = async (phoneNumber: string) =>
 const signPhoneToken = (phoneNumber: string) => 
   jwt.sign({ phoneNumber }, process.env.JWT_SECRET!, { expiresIn: '24h' })
 
+const verifyPhoneToken = (token: string): string | null => {
+  try {
+    const payload = jwt.verify(token, process.env.JWT_SECRET!) as { phoneNumber?: string; phone?: string };
+    const phoneNumber = payload.phoneNumber ?? payload.phone;
+
+    return !phoneNumber 
+      ? null 
+      : phoneNumber.replace(/^whatsapp:/i, "").replace(/[()\s-]/g, "").trim();
+  } catch { return null; }
+}
+
 export const trialService = { 
   startTrialAsync, 
   saveGooglePhoneTokenAsync, 
   getPhoneTrialAsync,
   getGooglePhoneTokenAsync,
-  signPhoneToken
+  signPhoneToken,
+  verifyPhoneToken
 }

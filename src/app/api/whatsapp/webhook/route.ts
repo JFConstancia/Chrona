@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
     if(!isAllowed) {
       const phoneToken = trialService.signPhoneToken(phoneNumber)
       const upgradeLink = `${process.env.PUBLIC_URL}/upgrade?token=${encodeURIComponent(phoneToken)}`
-      const message = `Your afree trial has concluded. Upgrade here: ${upgradeLink}`
+      const message = `Your free trial has concluded. Upgrade here: ${upgradeLink}`
       await twilioService.sendMessageAsync(from, message)
 
       return NextResponse.json({ ok: true })
