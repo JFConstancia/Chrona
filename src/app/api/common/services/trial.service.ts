@@ -2,6 +2,7 @@ import { googlePhoneTokenRepository } from "../repositories/google-phone-token.r
 import { phoneTrialRepository } from "../repositories/phone-trial.repository"
 import jwt from 'jsonwebtoken'
 import 'server-only'
+import { normalizePhoneNumber } from "../utility/phone-number.utility"
 
 const startTrialAsync = async (phoneNumber: string) => 
   await phoneTrialRepository.upsertPhoneTrialAsync(phoneNumber)
@@ -10,7 +11,7 @@ const getPhoneTrialAsync = async (phoneNumber: string) =>
   await phoneTrialRepository.getPhoneTrialAsync(phoneNumber)
 
 const saveGooglePhoneTokenAsync = async (phoneNumber: string, accessToken: string, refreshToken: string, expiresAtMs: number, email: string) => 
-  await googlePhoneTokenRepository.upsertGooglePhoneTokenAsync(phoneNumber, accessToken, refreshToken, expiresAtMs, email)
+  await googlePhoneTokenRepository.upsertGooglePhoneTokenAsync(normalizePhoneNumber(phoneNumber), accessToken, refreshToken, expiresAtMs, email)
 
 const getGooglePhoneTokenAsync = async (phoneNumber: string) => 
   await googlePhoneTokenRepository.getGooglePhoneTokenAsync(phoneNumber)
@@ -25,7 +26,7 @@ const verifyPhoneToken = (token: string): string | null => {
 
     return !phoneNumber 
       ? null 
-      : phoneNumber.replace(/^whatsapp:/i, "").replace(/[()\s-]/g, "").trim();
+      : normalizePhoneNumber(phoneNumber);
   } catch { return null; }
 }
 

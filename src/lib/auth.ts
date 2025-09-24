@@ -7,7 +7,16 @@ import bcrypt from "bcrypt";
 
 const googleProvider = GoogleProvider({
   clientId: process.env.GOOGLE_CLIENT_ID!,
-  clientSecret: process.env.GOOGLE_CLIENT_SECRET!
+  clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+  authorization: {
+    params: {
+      scope: "openid email profile https://www.googleapis.com/auth/calendar.events",
+      access_type: "offline",   // <- needed for refresh_token
+      prompt: "consent",        // <- force new refresh_token even if previously granted
+      include_granted_scopes: "false",
+      response_type: "code"
+    }
+  }
 })
 
 const credentialsProvider = CredentialsProvider({
